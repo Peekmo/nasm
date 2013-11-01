@@ -24,12 +24,50 @@ end:
 ;-----------------
 
 start:
-    push ax
-	push bx
-	mov si, os1
+   	mov si, os1
+	call show
+	call input
+
+input:
 	mov ah, 0x02
-	mov dh, 0x08
     mov cx, 1
+.wait:
+	mov ah, 0x01
+	int 0x16
+	jz .wait
+	
+	mov ah, 0x00
+	int 0x16
+	mov [si], al
+	inc si
+	cmp al, 13
+	je .endWait	
+	
+	mov ah, 0x0A
+	int 0x10
+	inc dl
+	mov ah, 0x02
+	int 0x10
+	jmp .wait
+
+.endWait:
+	inc dh
+	xor dl, dl
+	mov ah, 0x02
+	int 0x10
+	mov byte [si], 0
+	call show
+	ret
+
+show:
+	push ax
+	push bx
+	push cx
+	push dx
+
+	mov ah, 0x03
+	int 0x10
+	mov cx, 1
 .debut:
     mov al, [si] 
     cmp al, 0     ; fin chaine ?
@@ -48,8 +86,12 @@ start:
     jmp .debut
 
 .fin:
+	pop dx
+	pop cx
 	pop bx
-    pop ax
+	pop ax
+
+	inc dh
     ret
 
 .newLine:

@@ -69,3 +69,6 @@ print_hex:
 	popa
 	ret
 
+HEX_OUT: db "0x000", 0
+HEX_LEN equ $-HEX_OUT
+

@@ -21,8 +21,14 @@ print_hex:
 	mov ebx, 0         ; Increment
 	mov si, HEX_OUT	   ; Met la chaine dans si
 	add si, HEX_LEN    ; Place le pointeur à la fin de la chaine
+	mov byte [si], 13
+	inc si
+	mov byte [si], 10
+	inc si
 	mov byte [si], 0   ; Rajoute le caractère null à la fin de la chaine
-	
+	dec si
+	dec si
+
 .nexthex:
 	mov cx, dx         ; Enregistre la valeur hexa dans une variable
 	add ebx, 1         ; Incremente + 1

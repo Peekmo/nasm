@@ -10,6 +10,9 @@ call print
 mov dx, 0x1fb6
 call print_hex
 
+mov dx, 0x1ab0
+call print_hex
+
 jmp $
 
 %include "functions.asm"

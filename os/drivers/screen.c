@@ -19,7 +19,7 @@ void printc(char character, int row, int col, char color)
 
     // Black on whit by default
     if (!color) {
-        color = WHITE;
+        color = DEFAULT_COLOR;
     }
 
     // Get offset to print char
@@ -30,11 +30,18 @@ void printc(char character, int row, int col, char color)
         offset = get_cursor();
     }
 
-    video_memory[offset]   = character;
-    video_memory[offset+1] = color;
+    if (character == '\n') {
+        int rows = offset / (2*MAX_COLS);
+        offset = get_offset(rows, MAX_COLS-1);
+    } else {
+        video_memory[offset]   = character;
+        video_memory[offset+1] = color;
+    }
 
     // Next char
     offset += 2;
+    offset = scroll_up(offset);
+
     set_cursor(offset);
 }
 
@@ -63,7 +70,7 @@ void printloc(char* message, int row, int col, char color)
  */
 void print (char* message)
 {
-    printloc(message, -1, -1, 0x74);
+    printloc(message, -1, -1, DEFAULT_COLOR);
 }
 
 /**
@@ -78,6 +85,20 @@ int get_offset(int row, int col)
 }
 
 /**
+ * Clear a row
+ * @param row Row to clear
+ */
+void clear_row(int row)
+{
+    int col;
+    for (col=0; col < MAX_COLS; col++) {
+        char* emp = (char*)get_offset(row, col) + VIDEO_ADDRESS;
+        emp[0] = ' ';
+        emp[1] = DEFAULT_COLOR;
+    }
+}
+
+/**
  * Clear the screen
  */
 void clear_screen()
@@ -86,9 +107,7 @@ void clear_screen()
     int col = 0;
 
     for (row=0; row < MAX_ROWS; row++) {
-        for (col=0; col < MAX_COLS; col++) {
-            printc(' ', row, col, (char)0x70);
-        }
+        clear_row(row);
     }
 
     // Initialize the cursor
@@ -127,6 +146,49 @@ void set_cursor(int offset)
     // Poid faible
     port_byte_out(REG_SCREEN_CTRL, 15);
     port_byte_out(REG_SCREEN_DATA, offset);
+}
+
+/**
+ * Copy a char* into an other
+ * @param src  char* to copy
+ * @param dest char* where to past
+ * @param size size of the element to copy
+ */
+void memory_copy(char* src, char* dest, int size)
+{
+    int i=0;
+    for (i=0; i<size; i++) {
+        *(dest + i) = *(src + i);
+    }
+}
+
+/**
+ * Scroll the screen to 1 line to the top if last line reached
+ * @param  offset offset of the current char
+ * @return        new offset
+ */
+int scroll_up(int offset)
+{
+    if (offset < get_offset(MAX_ROWS-1, MAX_COLS-1)) {
+        return offset;
+    }
+
+    int i;
+    for (i=1; i<MAX_ROWS; i++) {
+        memory_copy((char*)get_offset(i, 0) + VIDEO_ADDRESS,
+                    (char*)get_offset(i-1, 0) + VIDEO_ADDRESS,
+                    MAX_COLS*2
+        );
+    }
+
+    // Clear the last line
+    for (i=0; i < MAX_COLS*2; i++) {
+        clear_row(MAX_ROWS-1);
+    }
+
+    offset -= 2*MAX_COLS;
+
+    return offset;
 }
 
 /**

@@ -4,6 +4,7 @@
 #define MAX_COLS 80
 
 // COLORS ON BLACK BACKGROUND
+#define DEFAULT_COLOR 0x04
 #define BLUE   0x09
 #define GREEN  0x0A
 #define CYAN   0x0B

@@ -174,7 +174,7 @@ int scroll_up(int offset)
     }
 
     int i;
-    for (i=1; i<MAX_ROWS; i++) {
+    for (i=8; i<MAX_ROWS; i++) {
         memory_copy((char*)get_offset(i, 0) + VIDEO_ADDRESS,
                     (char*)get_offset(i-1, 0) + VIDEO_ADDRESS,
                     MAX_COLS*2

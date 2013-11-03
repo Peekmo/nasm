@@ -8,7 +8,7 @@ run: all
 all: os-image
 
 os-image: boot/bootsect.bin kernel.bin
-	cat $^ /dev/zero | dd of=os-image bs=512 count=2880
+	cat $^ /dev/zero | dd status=noxfer conv=notrunc of=os-image.flp bs=512 count=2880
 
 # Build the kernel
 kernel.bin: kernel/kernel_entry.o ${OBJ}

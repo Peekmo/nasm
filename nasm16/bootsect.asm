@@ -41,8 +41,8 @@ HELLO_MSG: db "Hello World !", 13, 10, 0
 GOODBYE_MSG: db "Goodbye World !", 13, 10, 0
 
 ; End Matter
-times 510-($-$$) db 0	; Fill the rest with zeros
-dw 0xAA55		; Boot loader signature
+times 510-($-$$) db 0        ; Fill the rest with zeros
+dw 0xAA55                ; Boot loader signature
 
 ; Adding data to other sectors
 times 256 dw 0xAAAA ; sector 2

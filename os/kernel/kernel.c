@@ -14,10 +14,6 @@ int main()
     printloc("[OK]", 9, 30, GREEN);
 
     printloc("You can now doing nothing :)", 11, 2, CYAN);
-    // printloc("[OK]", 0, 40, GREEN);
-    // print("\nChargement de rien du tout...");
-    // printloc("[OK]", 1, 40, GREEN);
-    // printloc("Bonjour Angele :D", 4, 40-str_len("Bonjour Harold :D"), YELLOW);
 }
 
 /**
